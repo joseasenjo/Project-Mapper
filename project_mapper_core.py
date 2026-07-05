@@ -14,8 +14,9 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER
 
 def analyze_project(root_path, max_depth=3):
+    """Analiza un proyecto y devuelve un diccionario con métricas."""
     if not os.path.isdir(root_path):
-        return {'error': f'La ruta {root_path} no es valida'}
+        return {'error': f'La ruta {root_path} no es válida'}
 
     total_size = 0
     total_files = 0
@@ -72,6 +73,7 @@ def format_size(size_bytes):
     return f"{size_bytes:.2f} TB"
 
 def download_from_google_drive(url):
+    """Descarga desde Google Drive y devuelve el contenido en bytes."""
     try:
         import re
         match = re.search(r'/d/([a-zA-Z0-9_-]+)', url)
@@ -89,6 +91,7 @@ def download_from_google_drive(url):
         raise Exception(f"Error al descargar de Google Drive: {e}")
 
 def download_from_dropbox(url):
+    """Descarga desde Dropbox y devuelve el contenido en bytes."""
     try:
         if 'dropbox.com' in url:
             if '?dl=0' in url:
@@ -102,6 +105,7 @@ def download_from_dropbox(url):
         raise Exception(f"Error al descargar de Dropbox: {e}")
 
 def download_from_url(url):
+    """Detecta el tipo de URL y descarga el contenido."""
     if 'drive.google.com' in url:
         return download_from_google_drive(url)
     elif 'dropbox.com' in url:
@@ -112,6 +116,7 @@ def download_from_url(url):
         return response.content
 
 def compare_projects(data1, data2):
+    """Compara dos proyectos y devuelve diferencias."""
     diff = {}
     diff['size_diff'] = {
         'project1': data1['size_human'],
@@ -136,6 +141,7 @@ def compare_projects(data1, data2):
     return diff
 
 def generate_pdf_report(data, filename="informe.pdf"):
+    """Genera un informe en PDF con los datos del proyecto."""
     doc = SimpleDocTemplate(filename, pagesize=letter,
                             rightMargin=72, leftMargin=72,
                             topMargin=72, bottomMargin=72)
@@ -145,18 +151,18 @@ def generate_pdf_report(data, filename="informe.pdf"):
     normal_style = styles['Normal']
     
     story = []
-    story.append(Paragraph("Informe de Analisis de Proyecto", title_style))
+    story.append(Paragraph("Informe de Análisis de Proyecto", title_style))
     story.append(Spacer(1, 0.25*inch))
 
     story.append(Paragraph("Resumen", heading_style))
     story.append(Paragraph(f"Total carpetas: {data['total_dirs']}", normal_style))
     story.append(Paragraph(f"Total archivos: {data['total_files']}", normal_style))
     story.append(Paragraph(f"Peso total: {data['size_human']}", normal_style))
-    story.append(Paragraph(f"Recomendacion: {data['recommendation']}", normal_style))
+    story.append(Paragraph(f"Recomendación: {data['recommendation']}", normal_style))
     story.append(Spacer(1, 0.2*inch))
 
-    story.append(Paragraph("Distribucion por extension", heading_style))
-    table_data = [['Extension', 'Cantidad', 'Tamano']]
+    story.append(Paragraph("Distribución por extensión", heading_style))
+    table_data = [['Extensión', 'Cantidad', 'Tamaño']]
     for ext, info in sorted(data['ext_distribution'].items(), key=lambda x: x[1]['size'], reverse=True)[:10]:
         table_data.append([ext, str(info['count']), format_size(info['size'])])
     table = Table(table_data, colWidths=[2*inch, 1*inch, 2*inch])
@@ -174,7 +180,7 @@ def generate_pdf_report(data, filename="informe.pdf"):
 
     story.append(Paragraph("Estructura de carpetas", heading_style))
     for path, content in data['structure'].items():
-        display_path = path if path else '(raiz)'
+        display_path = path if path else '(raíz)'
         story.append(Paragraph(f"<b>{display_path}</b>", normal_style))
         if content['dirs']:
             story.append(Paragraph(f"Subcarpetas: {', '.join(content['dirs'])}", normal_style))
