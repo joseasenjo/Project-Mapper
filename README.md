@@ -56,3 +56,31 @@ pip install -r requirements.txt
 
 # Ejecuta la aplicación
 streamlit run app.py
+
+📥 Uso
+1. Análisis local
+Ve a la pestaña "Análisis".
+
+Sube un archivo .zip de tu proyecto o haz clic en "Usar proyecto de ejemplo".
+
+Explora las métricas, gráficos y la estructura de carpetas.
+
+Descarga el informe en JSON, PDF o TXT.
+
+2. Comparativa
+Ve a la pestaña "Comparativa".
+
+Sube dos archivos .zip (uno en cada columna).
+
+Visualiza las diferencias de tamaño, número de archivos y distribución por extensiones.
+
+3. Análisis remoto
+Ve a la pestaña "Remoto".
+
+Pega la URL de un archivo .zip alojado en Google Drive o Dropbox.
+
+Haz clic en "Descargar y analizar".
+
+Los resultados se mostrarán en la pestaña "Análisis".
+
+
